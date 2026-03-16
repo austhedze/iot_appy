@@ -12,15 +12,26 @@ class AppColors {
   static const Color accent = Color(0xFF00BCD4);
   static const Color accentLight = Color(0xFF4DD0E1);
 
-  // ── Surfaces ──
+  // ── Surfaces (Light) ──
   static const Color background = Color(0xFFF5F7FA);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color cardBg = Color(0xFFFFFFFF);
 
-  // ── Text ──
+  // ── Surfaces (Dark) ──
+  static const Color darkBackground = Color(0xFF0F1117);
+  static const Color darkSurface = Color(0xFF1A1D27);
+  static const Color darkCardBg = Color(0xFF1E2130);
+  static const Color darkElevated = Color(0xFF252836);
+
+  // ── Text (Light) ──
   static const Color textPrimary = Color(0xFF1A1D26);
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color textHint = Color(0xFF9CA3AF);
+
+  // ── Text (Dark) ──
+  static const Color darkTextPrimary = Color(0xFFF0F2F5);
+  static const Color darkTextSecondary = Color(0xFF9CA3B0);
+  static const Color darkTextHint = Color(0xFF5C6370);
 
   // ── Status ──
   static const Color success = Color(0xFF10B981);

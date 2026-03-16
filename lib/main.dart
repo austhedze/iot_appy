@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'theme/app_theme.dart';
+import 'services/theme_provider.dart';
 import 'screens/splash_screen.dart';
+
+final themeProvider = ThemeProvider();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,19 +29,28 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const IoTIncubatorApp());
+  runApp(IoTIncubatorApp(themeProvider: themeProvider));
 }
 
 class IoTIncubatorApp extends StatelessWidget {
-  const IoTIncubatorApp({super.key});
+  final ThemeProvider themeProvider;
+
+  const IoTIncubatorApp({super.key, required this.themeProvider});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'IoT Incubator',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const SplashScreen(),
+    return ListenableBuilder(
+      listenable: themeProvider,
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'IoT Incubator',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeProvider.themeMode,
+          home: SplashScreen(themeProvider: themeProvider),
+        );
+      },
     );
   }
 }

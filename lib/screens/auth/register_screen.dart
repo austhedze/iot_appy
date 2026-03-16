@@ -3,10 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_colors.dart';
 import '../../services/auth_service.dart';
+import '../../services/theme_provider.dart';
 import '../dashboard/dashboard_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final ThemeProvider themeProvider;
+
+  const RegisterScreen({super.key, required this.themeProvider});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -48,7 +51,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        MaterialPageRoute(
+          builder: (_) => DashboardScreen(themeProvider: widget.themeProvider),
+        ),
         (route) => false,
       );
     } on FirebaseAuthException catch (e) {

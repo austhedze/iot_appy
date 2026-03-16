@@ -26,12 +26,16 @@ class SensorGaugeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: isDark ? AppColors.darkCardBg : AppColors.cardBg,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: AppColors.cardShadow,
+        boxShadow: isDark ? null : AppColors.cardShadow,
+        border: isDark
+            ? Border.all(color: Colors.white.withValues(alpha: 0.06))
+            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

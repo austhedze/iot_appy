@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_colors.dart';
 import '../../services/auth_service.dart';
 import '../../services/database_service.dart';
+import '../../services/theme_provider.dart';
 import '../../models/incubator_data.dart';
 import '../../widgets/sensor_gauge_card.dart';
 import '../../widgets/device_control_card.dart';
@@ -12,10 +13,12 @@ import '../../widgets/incubation_progress_card.dart';
 import '../../widgets/history_chart_card.dart';
 import '../../widgets/system_info_card.dart';
 import '../../widgets/settings_sheet.dart';
-import '../auth/login_screen.dart';
+import '../settings/settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final ThemeProvider themeProvider;
+
+  const DashboardScreen({super.key, required this.themeProvider});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -68,39 +71,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.dispose();
   }
 
-  Future<void> _logout() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Text('Sign Out'),
-        content: const Text('Are you sure you want to sign out?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.danger,
-              minimumSize: const Size(0, 42),
-            ),
-            child: const Text('Sign Out'),
-          ),
-        ],
+  void _openAppSettings() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => SettingsScreen(
+          themeProvider: widget.themeProvider,
+        ),
+        transitionsBuilder: (_, animation, __, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
-
-    if (confirmed == true) {
-      await _auth.signOut();
-      if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-        (route) => false,
-      );
-    }
   }
 
   void _openSettings() {
@@ -127,15 +119,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
- return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        systemNavigationBarColor:
+            isDark ? AppColors.darkBackground : Colors.white,
+        systemNavigationBarIconBrightness:
+            isDark ? Brightness.light : Brightness.dark,
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
       ),
       child: Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
       body: SafeArea(
         child: RefreshIndicator(
           color: AppColors.primary,
@@ -184,9 +179,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       const SizedBox(width: 10),
                       _iconButton(
-                        icon: Icons.logout_rounded,
-                        onTap: _logout,
-                        color: AppColors.danger,
+                        icon: Icons.settings_rounded,
+                        onTap: _openAppSettings,
                       ),
                     ],
                   ).animate().fadeIn(duration: 400.ms),
@@ -418,16 +412,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required VoidCallback onTap,
     Color? color,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveColor = color ?? (isDark ? AppColors.accentLight : AppColors.primary);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: (color ?? AppColors.primary).withValues(alpha: 0.08),
+          color: isDark
+              ? AppColors.darkCardBg
+              : effectiveColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(13),
+          border: isDark
+              ? Border.all(color: Colors.white.withValues(alpha: 0.06))
+              : null,
         ),
-        child: Icon(icon, color: color ?? AppColors.primary, size: 20),
+        child: Icon(icon, color: effectiveColor, size: 20),
       ),
     );
   }

@@ -30,6 +30,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: EdgeInsets.only(
         left: 24,
@@ -37,9 +38,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
         top: 16,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -53,7 +54,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -135,7 +136,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: isDark ? AppColors.darkElevated : AppColors.background,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -204,7 +205,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.darkElevated
+            : AppColors.background,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(

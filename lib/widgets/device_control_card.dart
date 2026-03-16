@@ -21,15 +21,18 @@ class DeviceControlCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: isDark ? AppColors.darkCardBg : AppColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: AppColors.cardShadow,
+        boxShadow: isDark ? null : AppColors.cardShadow,
         border: isOn
             ? Border.all(color: activeColor.withValues(alpha: 0.3), width: 1.5)
-            : null,
+            : isDark
+                ? Border.all(color: Colors.white.withValues(alpha: 0.06))
+                : null,
       ),
       child: Row(
         children: [
@@ -39,7 +42,9 @@ class DeviceControlCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: isOn
                   ? activeColor.withValues(alpha: 0.12)
-                  : AppColors.background,
+                  : isDark
+                      ? AppColors.darkElevated
+                      : AppColors.background,
               borderRadius: BorderRadius.circular(13),
             ),
             child: Icon(
@@ -73,7 +78,9 @@ class DeviceControlCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: isOn
                   ? activeColor.withValues(alpha: 0.1)
-                  : AppColors.background,
+                  : isDark
+                      ? AppColors.darkElevated
+                      : AppColors.background,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
