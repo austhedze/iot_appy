@@ -220,20 +220,15 @@ void controlIncubator() {
   }
 
   // Humidity - hysteresis control
-  // When atomizer is ON: keep running until humidity reaches target
+  // When atomizer is ON: keep running until humidity reaches or exceeds target
+  //   (any value >= TARGET covers the upper safety limit as well)
   // When atomizer is OFF: turn on only when humidity drops below target minus tolerance
   if (atomizerON) {
     if (currentHumidity >= TARGET_HUMIDITY) {
       digitalWrite(RELAY_ATOMIZER, HIGH); atomizerON = false;
     }
-  } else {
-    if (currentHumidity < (TARGET_HUMIDITY - HUMIDITY_TOLERANCE)) {
-      digitalWrite(RELAY_ATOMIZER, LOW); atomizerON = true;
-    }
-  }
-  // Safety override: turn off immediately if humidity exceeds upper limit
-  if (currentHumidity > (TARGET_HUMIDITY + HUMIDITY_TOLERANCE)) {
-    digitalWrite(RELAY_ATOMIZER, HIGH); atomizerON = false;
+  } else if (currentHumidity < (TARGET_HUMIDITY - HUMIDITY_TOLERANCE)) {
+    digitalWrite(RELAY_ATOMIZER, LOW); atomizerON = true;
   }
 }
 
